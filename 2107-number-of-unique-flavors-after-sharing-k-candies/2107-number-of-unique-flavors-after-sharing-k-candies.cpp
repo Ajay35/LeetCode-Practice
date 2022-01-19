@@ -2,7 +2,7 @@ class Solution {
 public:
     int shareCandies(vector<int>& candies, int k) {
         
-        map<int, int> flavours;
+        vector<int> flavours(100001);
         int unique_flavours = 0;
         int n = candies.size();
         for(int i = 0; i < n; i++)
