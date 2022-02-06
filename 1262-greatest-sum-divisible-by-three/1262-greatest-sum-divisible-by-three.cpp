@@ -1,26 +1,33 @@
 class Solution {
 public:
-    int dp[40001][3];
-    int f(int i, int s, vector<int>& nums)
-    {
-        if(i >= nums.size())
-        {
-            if(s == 0)
-                return 0;
-            return -1e9;            
-        }
-        
-        int& ans = dp[i][s];
-        if(dp[i][s] != -1)
-            return ans;
-        else
-            ans = 0;
-        ans = max(nums[i] + f(i + 1, (s + nums[i]) % 3, nums), f(i + 1, s, nums));
-        return ans;
-    }
     int maxSumDivThree(vector<int>& nums) {
-        memset(dp, -1, sizeof dp);
-        int ans = f(0, 0, nums);
-        return ans;
+        
+        int n = nums.size();
+       vector<vector<int>> dp(n, vector<int>(3));
+   
+        dp[0][nums[0] % 3] = nums[0];
+        for (int i = 1; i < n; i++) 
+        {
+            int num = nums[i];
+            int mod = num % 3;
+            if (mod == 0) {
+                dp[i][0] = dp[i - 1][0] + num;
+                dp[i][1] = dp[i - 1][1] > 0 ? dp[i - 1][1] + num : 0;
+                dp[i][2] = dp[i - 1][2] > 0 ? dp[i - 1][2] + num : 0;
+            } 
+            else if (mod == 1) {
+                dp[i][0] = max(dp[i - 1][0], dp[i - 1][2] > 0 ? dp[i - 1][2] + num : 0);
+                dp[i][1] = max(dp[i - 1][1], dp[i - 1][0] + num);
+                dp[i][2] = dp[i - 1][1] > 0 ? dp[i - 1][1] + num : 0;
+            } 
+            else 
+            {    
+                dp[i][0] = max(dp[i - 1][0], dp[i - 1][1] > 0 ? dp[i - 1][1] + num : 0);
+                dp[i][1] = max(dp[i - 1][1], dp[i - 1][2] > 0 ? dp[i - 1][2] + num : 0);
+                dp[i][2] = max(dp[i - 1][2], dp[i - 1][0] + num);
+            }
+        }
+
+        return dp[n - 1][0];
     }
 };
