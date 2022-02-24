@@ -12,7 +12,7 @@ public:
         int ans = 1e9;
         if(word1==word2)
         {
-            vector<int> v = words[word1];
+            vector<int>& v = words[word1];
             for(int i = 1; i < v.size(); i++)
             {
                 ans = min(ans, v[i] - v[i - 1]);
@@ -20,8 +20,8 @@ public:
         }
         else
         {
-            vector<int> v1 = words[word1];
-            vector<int> v2 = words[word2];
+            vector<int>& v1 = words[word1];
+            vector<int>& v2 = words[word2];
             for(int i = 0; i < v1.size(); i++)
             {
                 int x = v1[i];
