@@ -14,7 +14,7 @@ public:
         }
         return true;
     }
-    void f(int i, int j, string& s, vector<string> cur, vector<vector<string>>& ans)
+    void f(int i, int j, string& s, vector<string>& cur, vector<vector<string>>& ans)
     {
         if(j == s.size() - 1)
         {
@@ -22,6 +22,7 @@ public:
             if(palindrome(temp)){
                 cur.push_back(temp);
                 ans.push_back(cur);
+                cur.pop_back();
             }
             return;
         }
