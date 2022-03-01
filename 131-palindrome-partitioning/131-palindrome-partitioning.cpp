@@ -1,50 +1,23 @@
 class Solution {
 public:
-    bool palindrome(string& s)
-    {
-        int l = 0, r = s.size()-1;
-        while(l < r)
-        {
-            if(s[l] != s[r])
-            {
-                return false;
-            }
-            l++;
-            r--;
-        }
-        return true;
-    }
-    void f(int i, int j, string& s, vector<string>& cur, vector<vector<string>>& ans)
-    {
-        if(j == s.size() - 1)
-        {
-            string temp = s.substr(i, j - i + 1);
-            if(palindrome(temp)){
-                cur.push_back(temp);
-                ans.push_back(cur);
-                cur.pop_back();
-            }
-            return;
-        }
-        string temp = s.substr(i, j - i + 1);
-        if(palindrome(temp))
-        {    
-            cur.push_back(temp);
-            f(j + 1, j + 1, s, cur, ans);
-            cur.pop_back();
-            f(i, j + 1, s, cur, ans);
-        }
-        else
-        {
-            f(i, j + 1, s, cur, ans);
-        }
-    }
     vector<vector<string>> partition(string s) {
-        int n = s.size();
-        
-        vector<vector<string>> ans;
-        vector<string> cur;
-        f(0, 0, s, cur, ans);
-        return ans;
+        int len = s.length();
+        vector<vector<bool>> dp (len, vector <bool> (len, false));
+        vector<vector<string>> result;
+        vector<string> currentList;
+        dfs(result, s, 0, currentList, dp);
+        return result;
+    }
+
+    void dfs(vector<vector<string>> &result, string &s, int start, vector<string> &currentList, vector<vector<bool>> &dp) {
+        if (start >= s.length()) result.push_back(currentList);
+        for (int end = start; end < s.length(); end++) {
+            if (s[start] == s[end] && (end - start <= 2 || dp[start + 1][end - 1])) {
+                dp[start][end] = true;
+                currentList.push_back(s.substr(start, end - start + 1));
+                dfs(result, s, end + 1, currentList, dp);
+                currentList.pop_back();
+            }
+        }
     }
 };
