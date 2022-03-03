@@ -12,18 +12,16 @@ public:
     string largestNumber(vector<int>& nums) {
         int n = nums.size();
         string ans;
-        for(int i = 0; i < n; i++) {
-            int big = nums[i];
-            int big_ind = -1;
-            for(int j = i + 1; j < n; j++) {
-                if(num(big, nums[j])) {
-                    big = nums[j];
-                    big_ind = j;
-                }
+        sort(begin(nums), end(nums),[](int x, int y) {
+            string nx = to_string(x);
+            string ny = to_string(y);
+            if(nx + ny > ny + nx) {
+                return 1;
             }
-            if(big_ind != -1) {
-                swap(nums[i], nums[big_ind]);
-            }
+            return 0;
+        });
+        for(int i = 0; i < n; i++)
+        {
             ans += to_string(nums[i]);
         }
         int ind = 0;
