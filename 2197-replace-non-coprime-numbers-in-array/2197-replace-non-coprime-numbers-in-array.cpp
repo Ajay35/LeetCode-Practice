@@ -1,16 +1,16 @@
 class Solution {
 public:
-    vector<int> replaceNonCoprimes(vector<int>& nums) {
-    list<int> l(begin(nums), end(nums));
-    for (auto it = begin(l); it != end(l); ++it)
-        if (prev(it) != end(l)) {
-            int n1 = *prev(it), n2 = *it;
-            int it_gcd = gcd(n1, n2);
-            if (it_gcd > 1) {
-                l.erase(prev(it));
-                *it = (long long)n1 * n2 / it_gcd;
-                --it;
+    vector<int> replaceNonCoprimes(vector<int>& A) {
+    vector<int> res;
+        for (int a: A) {   
+            while (true) {   
+                int x = __gcd(res.empty() ? 1 : res.back(), a);
+                if (x == 1) break; // co-prime
+                a *= res.back() / x;
+                res.pop_back();
             }
+            res.push_back(a);
         }
-    return vector<int>(begin(l), end(l));}
+        return res;
+    }
 };
