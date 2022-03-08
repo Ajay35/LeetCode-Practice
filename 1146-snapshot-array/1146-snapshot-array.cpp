@@ -1,10 +1,11 @@
 class SnapshotArray {
 public:
     int snaps;
-    vector<pair<int, int>> store[50001];
+    vector<vector<pair<int, int>>> store;
     
     SnapshotArray(int length) {
         snaps=0;
+        store.resize(length);
     }
     
     void set(int index, int val) {
