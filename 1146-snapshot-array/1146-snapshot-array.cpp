@@ -20,12 +20,16 @@ public:
         // get the snapshot at index which is smaller or equal to
         // snap_id but not greater than snap_id....
         int ans = 0;
-        for(int i = 0; i < store[index].size(); i++)
+        int l = 0, r = store[index].size()-1;
+        while(l <= r)
         {
-            if(store[index][i].first <= snap_id)
-                ans = store[index][i].second;
-            else
-                break;
+            int mid = (l + r) / 2;
+            if(store[index][mid].first > snap_id)
+                r = mid-1;
+            else if(store[index][mid].first <= snap_id) {
+                ans = store[index][mid].second;
+                l = mid + 1;
+            }
         }
         return ans;
         
