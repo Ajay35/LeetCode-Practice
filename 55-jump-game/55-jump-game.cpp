@@ -9,15 +9,13 @@ public:
         {
             if(i <= mx)
             {
-                nums[i] = i + nums[i];
-                mx = max(mx, nums[i]);
+                mx = max(mx, nums[i] + i);
             }
             else
             {
                 return false;
             }
         }
-        
         return true;
     }
 };
