@@ -9,7 +9,7 @@ public:
             {
                 if(ans[i] <= ans[i - 1])
                 {
-                    ans[i] = ans[i - 1] +  (ratings[i] > ratings[i - 1]);
+                    ans[i] = ans[i - 1] +  1;
                 }
             }
         }
@@ -19,7 +19,7 @@ public:
             {
                 if(ans[i] <= ans[i + 1])
                 {
-                    ans[i] = ans[i + 1] + (ratings[i] > ratings[i + 1]);
+                    ans[i] = ans[i + 1] + 1;
                 }
             }
         }
