@@ -1,19 +1,21 @@
 class Solution {
 public:
-    int maxTwoEvents(vector<vector<int>>& e) {
-        int size=e.size(),ans=0,maxi=0;
-        sort(e.begin(),e.end());
-        map<int,int>mp;
-        while(size--)
-        {
-            auto it=mp.upper_bound(e[size][1]);
-            maxi=max(maxi,e[size][2]);
-              mp[e[size][0]]=maxi;
-            if(it==mp.end())
-                ans=max(ans,maxi);
-            else
-                ans=max(ans,e[size][2]+it->second);
+    int maxTwoEvents(vector<vector<int>>& events) {
+        int res = 0;
+        int maxValue = 0;
+
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        sort(events.begin(), events.end());
+
+        for (auto& e : events) {
+            while (!pq.empty() && pq.top().first < e[0]) {
+                maxValue = max(maxValue, pq.top().second);
+                pq.pop();
+            }
+            res = max(res, maxValue + e[2]);
+            pq.push({e[1], e[2]});
         }
-        return ans;
+
+        return res;
     }
 };
