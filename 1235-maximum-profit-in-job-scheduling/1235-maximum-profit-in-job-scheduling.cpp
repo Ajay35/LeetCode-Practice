@@ -2,26 +2,34 @@ class Solution {
 public:
     int memo[50001];
     
-    int findMaxProfit(vector<vector<int>>& jobs, vector<int>& start, int n, int position) {
-        if (position == n) {
-            return 0;
-        }
-        if (memo[position] != -1) {
-            return memo[position];
-        }
-        int nextIndex = lower_bound(start.begin(), start.end(), jobs[position][1]) - start.begin();
+    int findMaxProfit(vector<int>& startTime, vector<vector<int>>& jobs) {
+        int length = startTime.size();
         
-        int maxProfit = max(findMaxProfit(jobs, start, n, position + 1), 
-                        jobs[position][2] + findMaxProfit(jobs, start, n, nextIndex));
+        for (int position = length - 1; position >= 0; position--) {
+            int currProfit = 0;
+            
+            int nextIndex = lower_bound(startTime.begin(), startTime.end(), jobs[position][1]) - startTime.begin();
+            
+            if (nextIndex != length) {
+                currProfit = jobs[position][2] + memo[nextIndex];
+            } else {
+                currProfit = jobs[position][2];
+            }
+            
+            if (position == length - 1) {
+                memo[position] = currProfit;
+            } else {
+                memo[position] = max(currProfit, memo[position + 1]);
+            }
+        }
         
-        return memo[position] = maxProfit;
+        return memo[0];
     }
     
     int jobScheduling(vector<int>& startTime, vector<int>& endTime, vector<int>& profit) {
         vector<vector<int>> jobs;
         
-        memset(memo, -1, sizeof(memo));
-      
+        
         for (int i = 0; i < profit.size(); i++) {
             jobs.push_back({startTime[i], endTime[i], profit[i]});
         }
@@ -32,6 +40,6 @@ public:
             startTime[i] = jobs[i][0];
         }
         
-        return findMaxProfit(jobs, startTime, profit.size(), 0);
+        return findMaxProfit(startTime, jobs);
     }
 };
