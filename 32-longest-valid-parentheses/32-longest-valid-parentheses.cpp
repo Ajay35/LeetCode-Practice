@@ -1,49 +1,29 @@
 class Solution {
 public:
     int longestValidParentheses(string s) {
-        stack<int> st;
-        int ans = 0;
-        int n = s.size();
-        vector<int> dp(n);
-        
-        for(int i = 0; i < n; i++)
-        {
-            if(st.empty() or s[i] == '(')
-                st.push(i);
-            else if(!st.empty() and s[i] == ')' and s[st.top()] == '(') 
+         if(s.length() <= 1) 
+                return 0;
+            int curMax = 0;
+            vector<int> longest(s.size(),0);
+            for(int i=1; i < s.length(); i++)
             {
-                dp[st.top()] += i - st.top() + 1;
-                st.pop();   
-            }
-            else
-            {
-                while(!st.empty())
-                    st.pop();
-            }
-        }
-        int i = 0;
-        while(i < n)
-        {
-            if(dp[i] > 0)
-            {
-                int ind = i;
-                int t = 0;
-                
-                while(ind < n and dp[ind] > 0)
+                if(s[i] == ')')
                 {
-                    t += dp[ind];
-                    ind += dp[ind];
+                    if(s[i-1] == '(')
+                    {
+                        longest[i] = (i-2) >= 0 ? (longest[i-2] + 2) : 2;
+                        curMax = max(longest[i],curMax);
+                    }
+                    else
+                    { 
+                        if(i-longest[i-1]-1 >= 0 && s[i-longest[i-1]-1] == '(')
+                        {
+                            longest[i] = longest[i-1] + 2 + ((i-longest[i-1]-2 >= 0)?longest[i-longest[i-1]-2]:0);
+                            curMax = max(longest[i],curMax);
+                        }
+                    }
                 }
-                
-                ans = max(ans, t);
-                i = ind;
             }
-            else
-            {
-                i++;
-            }
-        }
-        
-        return ans;
+            return curMax;
     }
 };
