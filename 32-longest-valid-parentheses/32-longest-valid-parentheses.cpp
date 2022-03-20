@@ -31,11 +31,9 @@ public:
                 
                 while(ind < n and dp[ind] > 0)
                 {
-                    cout<<ind<<" "<<dp[ind]<<" ";
                     t += dp[ind];
                     ind += dp[ind];
                 }
-                cout<<endl;
                 
                 ans = max(ans, t);
                 i = ind;
