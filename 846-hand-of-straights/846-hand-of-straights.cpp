@@ -6,7 +6,6 @@ public:
         map<int, int> store;
         if(n % groupSize)
             return false;
-        sort(begin(hand), end(hand));
         for(int i = 0; i < n; i++)
         {
             store[hand[i]]++;
