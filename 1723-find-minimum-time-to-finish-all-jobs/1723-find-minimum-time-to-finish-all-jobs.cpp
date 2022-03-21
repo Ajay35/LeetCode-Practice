@@ -1,34 +1,36 @@
 class Solution {
 public:
-    int minimumTimeRequired(vector<int>& jobs, int k) 
-    {
-        const int n = jobs.size();
-        
-        vector<int> sums(1<<n);
-        for (int b = 0; b < (1<<n); ++b) 
-        {
-            for (int i = 0; i < n; ++i) 
-            {
-                if ((1<<i) & b) 
-                    sums[b] += jobs[i]; 
-            }    
+    int minimumTimeRequired(vector<int>& jobs, int k) {
+        int sum = 0;
+        for(int j:jobs)
+            sum += j;
+        sort(jobs.begin(),jobs.end(),greater<int>());
+        int l = jobs[0], r = sum;
+        while(l<r){
+            int mid = (l+r)>>1;
+            vector<int> worker(k,0);
+            if(dfs(jobs,worker,0,mid))
+                r = mid;
+            else
+                l = mid + 1;
         }
-        
-        vector<vector<int>> dp(k+1, vector<int>(1<<n));
-        
-        for (int b = 0; b < (1<<n); ++b) 
-            dp[1][b] = sums[b];
-        for (int i = 2; i <= k; ++i) 
-        {
-            for (int b = 1; b < (1<<n); ++b) 
-            {
-                dp[i][b] = dp[i-1][b];
-                for (int tb = b; tb; tb = (tb-1)&b) 
-                {
-                    dp[i][b] = min(dp[i][b], max(sums[tb], dp[i-1][b-tb]));
-                }
+        return l;
+    }
+    bool dfs(vector<int>& jobs, vector<int>& worker, int step, int target){
+        if(step>=jobs.size())
+            return true;
+        int cur = jobs[step];
+        // assign cur to worker i 
+        for(int i=0;i<worker.size();i++){
+            if(worker[i] + cur <= target){
+                worker[i] += cur;
+                if(dfs(jobs,worker,step+1,target))
+                    return true;
+                worker[i] -= cur;
             }
+            if(worker[i]==0)
+                break;
         }
-        return dp[k][(1<<n)-1];
+        return false;
     }
 };
