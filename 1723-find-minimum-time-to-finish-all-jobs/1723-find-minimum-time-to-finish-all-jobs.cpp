@@ -6,7 +6,8 @@ public:
             sum += j;
         sort(jobs.begin(),jobs.end(),greater<int>());
         int l = jobs[0], r = sum;
-        while(l<r){
+        while(l<r)
+        {
             int mid = (l+r)>>1;
             vector<int> worker(k,0);
             if(dfs(jobs,worker,0,mid))
@@ -16,13 +17,16 @@ public:
         }
         return l;
     }
-    bool dfs(vector<int>& jobs, vector<int>& worker, int step, int target){
+    bool dfs(vector<int>& jobs, vector<int>& worker, int step, int target)
+    {
         if(step>=jobs.size())
             return true;
         int cur = jobs[step];
-        // assign cur to worker i 
-        for(int i=0;i<worker.size();i++){
-            if(worker[i] + cur <= target){
+
+        for(int i=0;i<worker.size();i++)
+        {
+            if(worker[i] + cur <= target)
+            {
                 worker[i] += cur;
                 if(dfs(jobs,worker,step+1,target))
                     return true;
