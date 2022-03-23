@@ -1,56 +1,33 @@
-typedef pair<int, int> pii;
 class Solution {
+    typedef pair<int, int> PII;
 public:
-    int countRestrictedPaths(int n, vector<vector<int>>& edges)
-    {
-        unordered_map<int, vector<pair<int, int>>> gp;
-        for (auto& edge : edges) 
-        {
-            gp[edge[0]].push_back({edge[1], edge[2]});
-            gp[edge[1]].push_back({edge[0], edge[2]});
+    int countRestrictedPaths(int n, vector<vector<int>>& E) {
+        long mod = 1e9 + 7;
+        vector<vector<pair<long, int>>> G(n);
+        for (auto &e : E) {
+            int u = e[0] - 1, v = e[1] - 1, w = e[2];
+            G[u].emplace_back(v, w);
+            G[v].emplace_back(u, w);
         }
-        
-        vector<int> dist(n + 1, INT_MAX);
-        priority_queue<pii, vector<pii>, greater<pii> > pq;
-        pq.push({0, n});
-        dist[n] = 0;
-        
-		int u, v, w;
-        while (!pq.empty()) 
-        {
-            pii p = pq.top(); pq.pop();
-            u = p.second;
-            for (auto& to : gp[u]) 
-            {
-                v = to.first, w = to.second;
-                if (dist[v] > dist[u] + w) 
-                {
-                    dist[v] = dist[u] + w;
-                    pq.push({dist[v], v});
+        priority_queue<PII, vector<PII>, greater<PII>> pq;
+        vector<long> dist(n, INT_MAX), cnt(n, 0);
+        dist[n - 1] = 0;
+        cnt[n - 1] = 1;
+        pq.emplace(0, n - 1);
+        while (pq.size()) {
+            auto [w, u] = pq.top();
+            pq.pop();
+            if (w > dist[u]) continue;
+            for (auto &[v, d] : G[u]) {
+                if (dist[v] > w + d) {
+                    dist[v] = w + d;
+                    pq.emplace(dist[v], v);
+                }
+                if (w > dist[v]) {
+                    cnt[u] = (cnt[u] + cnt[v]) % mod;
                 }
             }
         }
-        vector<int> dp(n + 1, -1);
-        return dfs(gp, n, dp, dist);
-    }
-    
-    int dfs(unordered_map<int, vector<pair<int, int>>>& gp, int s, vector<int>& dp, vector<int>& dist) {
-        int mod = 1e9+7;
-        if (s == 1) 
-            return 1;
-        if (dp[s] != -1) 
-            return dp[s];
-        int sum = 0, weight, val;
-        
-        for (auto& n : gp[s]) 
-        {
-            weight = dist[s];
-            val = dist[n.first];
-            if (val > weight) 
-            {
-                sum = (sum % mod + dfs(gp, n.first, dp, dist) % mod) % mod;
-            }
-        }
-        return dp[s] = sum % mod;
+        return cnt[0];
     }
 };
