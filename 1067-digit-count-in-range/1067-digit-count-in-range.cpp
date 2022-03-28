@@ -44,7 +44,10 @@ public:
         {
             int min_digit = idx == 0 ? 1 : 0;
             int max_digit = s[idx] - '0';
-            for(int digit = min_digit; digit <= max_digit; digit++) res += dfs(idx + 1, width, cnt + (digit == d), digit < max_digit);
+            for(int digit = min_digit; digit <= max_digit; digit++) 
+            {
+                res += dfs(idx + 1, width, cnt + (digit == d), digit < max_digit);
+            }
         }
         return memo[idx][width][cnt][smaller] = res;
     }
