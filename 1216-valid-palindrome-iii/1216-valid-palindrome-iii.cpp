@@ -1,24 +1,18 @@
 class Solution {
 public:
-    vector<vector<int>> memo;
-    int isValidPalindrome(string &s, int i, int j) {
-
-        if (i == j)
-            return 0;
-
-        if (i == j - 1)
-            return s[i] != s[j];
-
-        if (memo[i][j] != -1)
-            return memo[i][j];
-
-        if (s[i] == s[j])
-            return memo[i][j] = isValidPalindrome(s, i + 1, j - 1);
-        return memo[i][j] = 1 + min(isValidPalindrome(s, i + 1, j), isValidPalindrome(s, i, j - 1));
-    }
     bool isValidPalindrome(string s, int k) 
     {
-        memo.resize(s.length(), vector<int>(s.length(), -1));
-        return isValidPalindrome(s, 0, s.length() - 1) <= k;
+        vector<vector<int>> memo(s.length(), vector<int>(s.length(), 0));
+        for (int i = s.length() - 2; i >= 0; i--)
+        {
+            for (int j = i + 1; j < s.length(); j++) 
+            {
+                if (s[i] == s[j])
+                    memo[i][j] = memo[i + 1][j - 1];
+                else
+                    memo[i][j] = 1 + min(memo[i + 1][j], memo[i][j - 1]);
+            }
+        }
+        return memo[0][s.length() - 1] <= k;
     }
 };
