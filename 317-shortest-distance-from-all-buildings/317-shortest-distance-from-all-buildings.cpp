@@ -1,43 +1,83 @@
 class Solution {
-public:
-    int shortestDistance(vector<vector<int>>& grid) 
-    {
-        int m = grid.size(), n = grid[0].size();
-        auto total = grid;
-        int walk = 0, mindist, delta[] = {0, 1, 0, -1, 0};
-        for (int i=0; i<m; ++i) 
-        {
-            for (int j=0; j<n; ++j) 
-            {
-                if (grid[i][j] == 1) 
-                {
-                    mindist = -1;
-                    auto dist = grid;
-                    queue<pair<int, int>> q;
-                    q.emplace(i, j);
-                    while (q.size()) 
-                    {
-                        auto ij = q.front();
-                        q.pop();
-                        for (int d = 0; d < 4; ++d) 
-                        {
-                            int i = ij.first + delta[d];
-                            int j = ij.second + delta[d+1];
-                            if (i >= 0 && i < m && j >= 0 && j < n && grid[i][j] == walk) 
-                            {
-                                grid[i][j]--;
-                                dist[i][j] = dist[ij.first][ij.second] + 1;
-                                total[i][j] += dist[i][j] - 1;
-                                q.emplace(i, j);
-                                if (mindist < 0 || mindist > total[i][j])
-                                    mindist = total[i][j];
-                            }
+private:
+    void bfs(vector<vector<int>>& grid, vector<vector<vector<int>>>& distances, int row, int col) {
+        int dirs[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        
+        int rows = grid.size(), cols = grid[0].size();
+        
+        // Queue to do a bfs, starting from each cell located at (r,c).
+        queue<pair<int, int>> q;
+        q.push({ row, col });
+        
+        // Keep track of visited cells.
+        vector<vector<bool>> vis (rows, vector<bool>(cols, false));
+        vis[row][col] = true;
+        
+        int steps = 0;
+        
+        while (!q.empty()) {
+            for (int i = q.size(); i > 0; --i) {
+                auto curr = q.front();
+                q.pop();
+                row = curr.first;
+                col = curr.second;
+                
+                // If we reached an empty cell, then add the distance
+                // and increment the count of houses reached at this cell.
+                if (grid[row][col] == 0) {
+                    distances[row][col][0] += steps;
+                    distances[row][col][1] += 1;
+                }
+                
+                // Traverse the next cells which is not a blockage.
+                for (auto& dir : dirs) {
+                    int nextRow = row + dir[0];
+                    int nextCol = col + dir[1];
+                    if (nextRow >= 0 && nextCol >= 0 && nextRow < rows && nextCol < cols) {
+                        if (!vis[nextRow][nextCol] && grid[nextRow][nextCol] == 0) {
+                            vis[nextRow][nextCol] = true;
+                            q.push({ nextRow, nextCol });
                         }
                     }
-                    walk--;
+                }
+            }
+            
+            // After traversing one level cells, increment the steps by 1.
+            steps++;
+        }
+    }
+    
+public:
+    int shortestDistance(vector<vector<int>>& grid) {
+        int minDistance = INT_MAX;
+        int rows = grid.size();
+        int cols = grid[0].size();
+        int totalHouses = 0;
+        
+        // Store { total_dist, houses_count } for each cell.
+        vector<vector<vector<int>>> distances (rows, vector<vector<int>> (cols, {0, 0}));
+        
+        // Count houses and start bfs from each house.
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                if (grid[row][col] == 1) {
+                    totalHouses++;
+                    bfs(grid, distances, row, col);
                 }
             }
         }
-        return mindist;
+        
+        for (int row = 0; row < rows; ++row) {
+            for (int col = 0; col < cols; ++col) {
+                if (distances[row][col][1] == totalHouses) {
+                    minDistance = min(minDistance, distances[row][col][0]);
+                }
+            }
+        }
+        
+        if (minDistance == INT_MAX) {
+            return -1;
+        }
+        return minDistance;
     }
 };
