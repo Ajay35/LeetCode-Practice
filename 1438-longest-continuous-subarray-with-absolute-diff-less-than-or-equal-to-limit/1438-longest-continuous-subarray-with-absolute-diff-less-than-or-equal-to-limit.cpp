@@ -1,14 +1,23 @@
 class Solution {
 public:
     int longestSubarray(vector<int>& A, int limit) {
+        deque<int> maxd, mind;
         int i = 0, j;
-        multiset<int> m;
         for (j = 0; j < A.size(); ++j) 
         {
-            m.insert(A[j]);
-            if (*m.rbegin() - *m.begin() > limit)
-                m.erase(m.find(A[i++]));
+            while (!maxd.empty() && A[j] > maxd.back()) maxd.pop_back();
+            while (!mind.empty() && A[j] < mind.back()) mind.pop_back();
+            maxd.push_back(A[j]);
+            mind.push_back(A[j]);
+            if (maxd.front() - mind.front() > limit) 
+            {
+                if (maxd.front() == A[i]) 
+                    maxd.pop_front();
+                if (mind.front() == A[i]) 
+                    mind.pop_front();
+                ++i;
+            }
         }
-        return j - i; 
+        return j - i;
     }
 };
