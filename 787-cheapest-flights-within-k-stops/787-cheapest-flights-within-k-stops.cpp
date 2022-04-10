@@ -1,18 +1,30 @@
-class Solution {
+class Solution
+{
 public:
-    int findCheapestPrice(int n, vector<vector<int>>& a, int src, int dst, int k) {
-        vector<int> c(n, 1e8);
-        c[src] = 0;
+    
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K)
+    {        
+        vector<vector<int>> dp(K+2, vector<int>(n, INT_MAX));
         
-        for(int z=0; z<=k; z++)
+        
+        for(int i = 0; i <= K+1; i++)
         {
-            vector<int> C(c);
-            for(auto e: a)
-            {
-                C[e[1]] = min(C[e[1]], c[e[0]] + e[2]);
-            }
-            c = C;
+            dp[i][src] = 0; 
         }
-        return c[dst] == 1e8 ? -1 : c[dst];
+        
+        for(int i = 1; i <= K+1; i++)
+        {
+            for(auto &f: flights)
+            {
+                int u = f[0];
+                int v = f[1];
+                int w = f[2];
+                
+                if(dp[i-1][u] != INT_MAX)
+                    dp[i][v] = min(dp[i][v], dp[i-1][u] + w);
+            }
+        }
+        
+        return (dp[K+1][dst] == INT_MAX)? -1: dp[K+1][dst];
     }
 };
