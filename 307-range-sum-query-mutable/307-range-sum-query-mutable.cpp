@@ -1,56 +1,43 @@
-public class NumArray {
-
-	int[] nums;
-	int[] BIT;
-	int n;
-
-	public NumArray(int[] nums) 
+class BIT { 
+    vector<int> bit;
+public:
+    BIT(int size=0) 
     {
-		this.nums = nums;
-
-		n = nums.length;
-		BIT = new int[n + 1];
-		for (int i = 0; i < n; i++)
-			init(i, nums[i]);
-	}
-
-	public void init(int i, int val) 
+        bit.assign(size + 1, 0);
+    }
+    int getSum(int idx) 
     {
-		i++;
-		while (i <= n) 
-        {
-			BIT[i] += val;
-			i += (i & -i);
-		}
-	}
-
-	void update(int i, int val) 
+        int sum = 0;
+        for (; idx > 0; idx -= idx & (-idx))
+            sum += bit[idx];
+        return sum;
+    }
+    void addValue(int idx, int val) 
     {
-		int diff = val - nums[i];
-		nums[i] = val;
-		init(i, diff);
-	}
-
-	public int getSum(int i) 
+        for (; idx < bit.size(); idx += idx & (-idx))
+            bit[idx] += val;
+    }
+};
+class NumArray 
+{
+    BIT bit;
+    vector<int> nums;
+public:
+    NumArray(vector<int>& nums) 
     {
-		int sum = 0;
-		i++;
-		while (i > 0) 
-        {
-			sum += BIT[i];
-			i -= (i & -i);
-		}
-		return sum;
-	}
-
-	public int sumRange(int i, int j) 
+        this->bit = BIT(nums.size());
+        this->nums = nums;
+        for (int i = 0; i < nums.size(); ++i)
+            bit.addValue(i+1, nums[i]);
+    }
+    void update(int index, int val) 
     {
-		return getSum(j) - getSum(i - 1);
-	}
-}
-
-// Your NumArray object will be instantiated and called as such:
-// NumArray numArray = new NumArray(nums);
-// numArray.sumRange(0, 1);
-// numArray.update(1, 10);
-// numArray.sumRange(1, 2);
+        int diff = val - nums[index];
+        bit.addValue(index + 1, diff);
+        nums[index] = val;
+    }
+    int sumRange(int left, int right) 
+    {
+        return bit.getSum(right+1) - bit.getSum(left);
+    }
+};
