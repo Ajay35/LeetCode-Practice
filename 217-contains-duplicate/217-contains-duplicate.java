@@ -1,19 +1,14 @@
 class Solution {
     public boolean containsDuplicate(int[] nums) {
         int n = nums.length;
-        Map<Integer, Integer> store = new HashMap<>();
+        Set<Integer> store = new HashSet<>();
         
         for(int i = 0; i < nums.length; i++)
         {
-            Integer c = store.get(nums[i]);
-            
-            if(c != null) {
+            if(store.contains(nums[i])) {
                 return true;
             }
-            else {
-                c = 0;
-                store.put(nums[i], c + 1);
-            }
+            store.add(nums[i]);
         }
         
         return false;
