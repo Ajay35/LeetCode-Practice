@@ -7,7 +7,7 @@ class Solution {
         {
             Integer c = store.get(nums[i]);
             
-            if(c != null && c == 1) {
+            if(c != null) {
                 return true;
             }
             else {
