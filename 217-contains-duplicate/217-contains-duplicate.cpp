@@ -3,12 +3,13 @@ public:
     bool containsDuplicate(vector<int>& nums) {
         int xor_num = 0;
         
-        sort(begin(nums), end(nums));
+        map<int, int> store;
         
-        for(int i = 1; i < nums.size(); i++)
+        for(int i = 0; i < nums.size(); i++)
         {
-            if(nums[i] == nums[i - 1])
+            if(store[nums[i]] == 1)
                 return true;
+            store[nums[i]] = 1;
         }
         
         return false;
