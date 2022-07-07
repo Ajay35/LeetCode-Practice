@@ -2,7 +2,7 @@ class Solution {
 public:
     bool containsDuplicate(vector<int>& nums) {
         
-        map<int, int> duplicate; 
+        unordered_map<int, int> duplicate; 
         
         for(int num: nums) {
             if(duplicate.find(num) != duplicate.end()) {
