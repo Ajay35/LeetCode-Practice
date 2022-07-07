@@ -1,15 +1,14 @@
 class Solution {
 public:
     bool containsDuplicate(vector<int>& nums) {
-        int xor_num = 0;
         
-        map<int, int> store;
+        map<int, int> duplicate; 
         
-        for(int i = 0; i < nums.size(); i++)
-        {
-            if(store[nums[i]] == 1)
+        for(int num: nums) {
+            if(duplicate.find(num) != duplicate.end()) {
                 return true;
-            store[nums[i]] = 1;
+            }
+            duplicate[num] = 1;
         }
         
         return false;
